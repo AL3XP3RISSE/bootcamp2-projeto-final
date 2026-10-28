@@ -1,14 +1,11 @@
-## Colaboradores
-- Alex Machado Generoso Perissê 22610844
-- Arthur Bradley Barroca 22603901
-- Giovanna Martins da Silva 22610329
-- Glauber Oliveira 22601400
-- Luis Ernane Oliveira de Alencar 22601006
+## Colaboradores & Funções 
+| Nome | RA | GitHub User | Função | Link PR |
+| --- | --- | --- | --- | --- |
+| Alex Machado Generoso Perissê | __RA: 22610844__ | github.com/AL3XPERISSE | Persistência |  |
+| Arthur Bradley Barroca | __RA:22603901__ | github.com/Arthur-Bradley-Barroca | DockerHub |  |
+| Giovanna Martins da Silva | __RA:22610329__ | github.com/giihmartins | Teste JavaScript |  |
+| Glauber Oliveira | __RA:22601400__ | github.com/glauberoliveirabr | Frontend |  |
+| Luis Ernane Oliveira de Alencar | __RA:22601006__ | github.com/luisernane-cell | Aplicação da API |  |
 
-| Nome | Função | 
-|---|---|
-| Alex | Persistência |
-| Arthur | Docker |
-| Giovanna | Teste Javascript |
-| Glauber | Frontend |
-| Luis Ernane | Integração da API |
+## Links
+- **Link do Repositório GitHub:** 
