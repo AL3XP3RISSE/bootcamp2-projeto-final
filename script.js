@@ -15,6 +15,7 @@ import {
    ============================================================= */
 const API_NOMES  = "https://servicodados.ibge.gov.br/api/v2/censos/nomes";
 const API_UFS    = "https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome";
+const TEMPO_LIMITE = 10000;  // ms até desistir de uma consulta ao IBGE
 
 // Supabase: chave publicável, feita para uso no frontend (ver README)
 const SUPABASE_URL = "https://bnmvvetcewvywtpvvbxz.supabase.co";
@@ -76,15 +77,27 @@ function limparEstado() {
   el.estado.hidden = true;
   el.estado.innerHTML = "";
 }
+/* =============================================================
+   CONSULTA AO IBGE (tempo limite + cache da visita)
+   ============================================================= */
+const cacheIBGE = new Map();  // url → resposta já recebida nesta visita
 
+// Busca na API do IBGE. Se passar de TEMPO_LIMITE, lança um erro
+// com name "TimeoutError". Respostas boas ficam guardadas no cache.
+async function consultarIBGE(url) {
+  if (cacheIBGE.has(url)) return cacheIBGE.get(url);
+  const resp = await fetch(url, { signal: AbortSignal.timeout(TEMPO_LIMITE) });
+  if (!resp.ok) throw new Error("Resposta " + resp.status);
+  const dados = await resp.json();
+  cacheIBGE.set(url, dados);
+  return dados;
+}
 /* =============================================================
    CARGA INICIAL: estados (UFs) + top 10 nacional
    ============================================================= */
 async function carregarUFs() {
   try {
-    const resp = await fetch(API_UFS);
-    if (!resp.ok) throw new Error();
-    const ufs = await resp.json();
+    const ufs = await consultarIBGE(API_UFS);
     ufs.forEach(uf => {
       const opt = document.createElement("option");
       opt.value = uf.id;
@@ -98,9 +111,7 @@ async function carregarUFs() {
 
 async function carregarTop10() {
   try {
-    const resp = await fetch(API_NOMES + "/ranking?localidade=BR");
-    if (!resp.ok) throw new Error();
-    const dados = await resp.json();
+    const dados = await consultarIBGE(API_NOMES + "/ranking?localidade=BR");
     const lista = dados[0]?.res?.slice(0, 10) ?? [];
     lista.forEach(item => {
       const btn = document.createElement("button");
@@ -117,7 +128,7 @@ async function carregarTop10() {
     });
   } catch {
     el.chips.innerHTML =
-      `<span class="src-tag">Ranking indisponível no momento — a busca continua funcionando normalmente.</span>`;
+      `<span class="src-tag">Ranking indisponível no momento. A busca continua funcionando normalmente.</span>`;
   }
 }
 
@@ -151,9 +162,7 @@ async function buscar() {
   mostrarEstado(`<span class="spinner" aria-hidden="true"></span>Consultando o IBGE…`);
 
   try {
-    const resp = await fetch(url);
-    if (!resp.ok) throw new Error("Resposta " + resp.status);
-    const dados = await resp.json();
+    const dados = await consultarIBGE(url);
 
     const serieA = dados.find(d => d.nome === nomeA);
     const serieB = modoComparar ? dados.find(d => d.nome === nomeB) : null;
@@ -162,8 +171,8 @@ async function buscar() {
     if (!serieA || !serieA.res?.length) {
       mostrarEstado(
         `Nenhum registro para <b>${titulo(nomeA)}</b> com esses filtros. ` +
-        `O IBGE só divulga nomes com pelo menos 20 ocorrências por década — ` +
-        `tente sem filtros ou confira a grafia.`, true
+        `O IBGE só divulga nomes com pelo menos 20 ocorrências por década. ` +
+        `Tente sem filtros ou confira a grafia.`, true
       );
       return;
     }
@@ -179,9 +188,12 @@ async function buscar() {
     renderizar(nomeA, serieA, nomeB, serieB);
 
   } catch (erro) {
-    mostrarEstado(
-      `A API do IBGE não respondeu agora. Verifique sua conexão e ` +
-      `tente de novo em instantes — nada foi perdido.`, true
+    // lentidão e falha têm mensagens diferentes
+    const lento = erro.name === "TimeoutError";
+    mostrarEstado(lento
+      ? `O IBGE está demorando para responder. Tente de novo em instantes.`
+      : `A API do IBGE não respondeu agora. Verifique sua conexão e ` +
+        `tente de novo em instantes. Nada foi perdido.`, true
     );
     console.error("Falha na consulta:", erro);
   }
