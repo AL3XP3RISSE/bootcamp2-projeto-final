@@ -8,7 +8,11 @@ import {
   limparNome, titulo, rotuloDecada, ordenarPeriodos,
   somarFrequencias, encontrarPico, variacaoPercentual, escapar,
 } from "../utils.js";
-
+import {
+  limparNome, titulo, rotuloDecada, ordenarPeriodos,
+  somarFrequencias, encontrarPico, variacaoPercentual, escapar,
+  jaGuardado,
+} from "../utils.js";
 /* ========== Dados de exemplo no formato da API do IBGE ========== */
 const serie = [
   { periodo: "[1990,2000[", frequencia: 500 },
@@ -103,5 +107,32 @@ describe("cálculos da série", () => {
 describe("escapar", () => {
   test("neutraliza HTML digitado na nota", () => {
     expect(escapar('<b>"oi"</b>')).toBe("&lt;b&gt;&quot;oi&quot;&lt;/b&gt;");
+  });
+});
+
+/*Persistência*/
+
+describe("escapar com dados do banco", () => {
+  test("aceita campo vazio sem quebrar", () => {
+    expect(escapar(null)).toBe("");
+  });
+});
+
+describe("jaGuardado", () => {
+  const lista = [
+    { nome: "MARIA", sexo: "F", localidade: "Brasil" },
+    { nome: "JOAO",  sexo: null, localidade: "Bahia (BA)" },
+  ];
+
+  test("encontra o mesmo nome com o mesmo recorte", () => {
+    expect(jaGuardado(lista, { nome: "MARIA", sexo: "F", localidade: "Brasil" })).toBe(true);
+  });
+
+  test("aceita o mesmo nome com outro recorte", () => {
+    expect(jaGuardado(lista, { nome: "MARIA", sexo: null, localidade: "Brasil" })).toBe(false);
+  });
+
+  test("aceita qualquer nome quando a shortlist está vazia", () => {
+    expect(jaGuardado([], { nome: "MARIA", sexo: "F", localidade: "Brasil" })).toBe(false);
   });
 });

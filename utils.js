@@ -62,7 +62,15 @@ export function variacaoPercentual(anterior, atual) {
 
 // Evita injeção de HTML na nota digitada pelo usuário
 export function escapar(texto) {
-  return texto.replace(/[&<>"']/g, c => ({
+  return String(texto ?? "").replace(/[&<>"']/g, c => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
   }[c]));
+}
+
+export function jaGuardado(lista, registro) {
+  return lista.some(item =>
+    item.nome === registro.nome &&
+    (item.sexo ?? null) === (registro.sexo ?? null) &&
+    item.localidade === registro.localidade
+  );
 }
