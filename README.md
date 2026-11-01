@@ -18,3 +18,20 @@
 
 ## Links
 •⁠  ⁠*Link do Repositório GitHub:* [Acesse aqui o Repositório.](https://github.com/AL3XP3RISSE/bootcamp2-projeto-final)
+
+
+## Como rodar com Docker
+
+Imagem pública no Docker Hub: [arthurbarroca/raiz-do-nome](https://hub.docker.com/r/arthurbarroca/raiz-do-nome)
+
+```bash
+docker run -d -p 8080:80 --name raiz-do-nome arthurbarroca/raiz-do-nome:etapa03
+```
+
+Depois, abra http://localhost:8080. Para parar e remover o container:
+
+```bash
+docker rm -f raiz-do-nome
+```
+
+A imagem usa Nginx Alpine com compressão gzip, cabeçalhos de segurança e healthcheck, e roda em computadores Intel e Apple Silicon.
