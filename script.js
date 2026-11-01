@@ -8,13 +8,9 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 import {
   limparNome, titulo, rotuloDecada, ordenarPeriodos,
   somarFrequencias, encontrarPico, variacaoPercentual, escapar,
-} from "./utils.js";
-
-import {
-  limparNome, titulo, rotuloDecada, ordenarPeriodos,
-  somarFrequencias, encontrarPico, variacaoPercentual, escapar,
   jaGuardado,
 } from "./utils.js";
+
 
 /* =============================================================
    CONSTANTES E ELEMENTOS

@@ -8,11 +8,6 @@ import {
   limparNome, titulo, rotuloDecada, ordenarPeriodos,
   somarFrequencias, encontrarPico, variacaoPercentual, escapar,
 } from "../utils.js";
-import {
-  limparNome, titulo, rotuloDecada, ordenarPeriodos,
-  somarFrequencias, encontrarPico, variacaoPercentual, escapar,
-  jaGuardado,
-} from "../utils.js";
 /* ========== Dados de exemplo no formato da API do IBGE ========== */
 const serie = [
   { periodo: "[1990,2000[", frequencia: 500 },
