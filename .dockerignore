@@ -1,0 +1,12 @@
+# ========== Fora da imagem: dependências e testes ==========
+node_modules
+tests
+package.json
+package-lock.json
+
+# ========== Fora da imagem: Git, CI e documentação ==========
+.git
+.github
+*.md
+docs/
+supabase/
