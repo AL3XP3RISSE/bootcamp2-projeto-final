@@ -10,6 +10,12 @@ import {
   somarFrequencias, encontrarPico, variacaoPercentual, escapar,
 } from "./utils.js";
 
+import {
+  limparNome, titulo, rotuloDecada, ordenarPeriodos,
+  somarFrequencias, encontrarPico, variacaoPercentual, escapar,
+  jaGuardado,
+} from "./utils.js";
+
 /* =============================================================
    CONSTANTES E ELEMENTOS
    ============================================================= */
@@ -59,6 +65,8 @@ const el = {
 };
 
 let resultadoAtual = null;   // dados do último nome pesquisado (para guardar)
+
+let shortlist = []; 
 
 let sexoAtivo = "";          // "", "F" ou "M"
 let modoComparar = false;
@@ -454,6 +462,12 @@ async function guardarNome(evento) {
   evento.preventDefault();
   if (!resultadoAtual) return;
 
+  if (jaGuardado(shortlist, resultadoAtual)) {
+    el.guardarMsg.className = "hint erro";
+    el.guardarMsg.textContent = `${titulo(resultadoAtual.nome)} já está na próxima geração com esse recorte.`;
+    return;
+  }
+
   el.btnGuardar.disabled = true;
   el.guardarMsg.className = "hint";
   el.guardarMsg.textContent = "Guardando…";
@@ -494,6 +508,8 @@ async function listarGeracao() {
     return;
   }
 
+   shortlist = data;
+
   if (!data.length) {
     el.listaGeracao.innerHTML =
       `<div class="gen-vazio">Ainda não há nomes aqui. Pesquise um nome e toque em "Guardar" para começar sua shortlist.</div>`;
@@ -513,12 +529,13 @@ async function listarGeracao() {
       item.sexo === "F" ? "feminino" : item.sexo === "M" ? "masculino" : null,
     ].filter(Boolean).join(" · ");
 
+    const nomeSeguro = escapar(titulo(item.nome));
     card.innerHTML =
-      `<div class="gen-nome">${titulo(item.nome)}</div>` +
-      `<div class="gen-meta">${fmt.format(item.total)} registros · melhor safra ${item.melhor_safra} · ${recorte}</div>` +
-      `<span class="gen-tag">${item.tag}</span>` +
+      `<div class="gen-nome">${nomeSeguro}</div>` +
+      `<div class="gen-meta">${fmt.format(item.total)} registros · melhor safra ${escapar(item.melhor_safra)} · ${escapar(recorte)}</div>` +
+      `<span class="gen-tag">${escapar(item.tag)}</span>` +
       (item.nota ? `<p class="gen-nota">"${escapar(item.nota)}"</p>` : "") +
-      `<button type="button" class="gen-del" aria-label="Excluir ${titulo(item.nome)} da shortlist" title="Excluir">×</button>`;
+      `<button type="button" class="gen-del" aria-label="Excluir ${nomeSeguro} da shortlist" title="Excluir">×</button>`;
 
     // reabrir a pesquisa com um toque
     const reabrir = () => {
@@ -537,8 +554,13 @@ async function listarGeracao() {
       if (erroDel) {
         card.classList.remove("saindo");
         console.error("Supabase delete:", erroDel);
-        alert("Não foi possível excluir agora. Tente de novo.");
-        return;
+        let aviso = card.querySelector(".hint.erro");
+        if (!aviso) {
+          aviso = document.createElement("p");
+          aviso.className = "hint erro";
+          card.appendChild(aviso);
+        }
+        aviso.textContent = "Não foi possível excluir agora. Tente de novo.";
       }
       setTimeout(listarGeracao, 280);
     });
