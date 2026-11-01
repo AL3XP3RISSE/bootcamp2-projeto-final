@@ -1,6 +1,7 @@
 # =============================================================
 # RAIZ DO NOME · integração contínua
-# Roda os testes do Vitest em todo PR para a main.
+# Confere a sintaxe dos arquivos JS e roda os testes do Vitest
+# em todo PR para a main.
 # O job se chama "testes": é esse o nome do status check
 # que fica obrigatório na proteção da main.
 # =============================================================
@@ -31,6 +32,15 @@ jobs:
       # ========== Dependências e testes ==========
       - name: Instalar dependências
         run: npm ci
+
+      # Os testes só importam o utils.js. Esta etapa pega erros de
+      # sintaxe no script.js (ex.: import duplicado), que quebram o app
+      # no navegador sem derrubar nenhum teste
+      - name: Conferir sintaxe do JavaScript
+        run: |
+          for arquivo in script.js utils.js; do
+            node --check "$arquivo"
+          done
 
       - name: Rodar testes
         run: npm test
