@@ -1,0 +1,24 @@
+{
+  "name": "raiz-do-nome",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "| Nome | RA | GitHub User | Função | Link PR | | --- | --- | --- | --- | --- | | Alex Machado Generoso Perissê | __RA:22610844__ | [Acessar meu Github User](https://github.com/AL3XP3RISSE) | Persistência |  | | Arthur Bradley Barroca | __RA:22603901__ | [Acessar meu Github User](https://github.com/Arthur-Bradley-Barroca) | DockerHub |  | | Giovanna Martins da Silva | __RA:22610329__ | [Acessar meu Github User](https://github.com/giihmartins) | Teste JavaScript |  | | Glauber Oliveira | __RA:22601400__ | [Acessar meu Github User](https://github.com/glauberoliveirabr) | Frontend |  | | Luis Ernane Oliveira de Alencar | __RA:22601006__ | [Acessar meu Github User](https://github.com/luisernane-cell) | Aplicação da API |  |",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AL3XP3RISSE/bootcamp2-projeto-final.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AL3XP3RISSE/bootcamp2-projeto-final/issues"
+  },
+  "homepage": "https://github.com/AL3XP3RISSE/bootcamp2-projeto-final#readme",
+  "devDependencies": {
+    "vitest": "^5.0.5"
+  }
+}
