@@ -7,6 +7,7 @@ import { describe, test, expect } from "vitest";
 import {
   limparNome, titulo, rotuloDecada, ordenarPeriodos,
   somarFrequencias, encontrarPico, variacaoPercentual, escapar,
+  jaGuardado,
 } from "../utils.js";
 /* ========== Dados de exemplo no formato da API do IBGE ========== */
 const serie = [
