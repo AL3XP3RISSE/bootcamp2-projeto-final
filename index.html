@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raiz do Nome — a raiz, a safra e a geração do seu nome no Brasil</title>
+
+<!-- ##### METATAGS ##### -->
+<meta name="description" content="Descubra a raiz, a safra e a geração do seu nome no Brasil. Dados oficiais do Censo IBGE, com shortlist de nomes para a próxima geração.">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="Raiz do Nome">
+<meta property="og:description" content="A raiz, a safra e a geração do seu nome no Brasil. Dados do IBGE.">
+<meta property="og:type" content="website">
+
+<!-- ============================================================= -->
+<!-- TAILWIND CSS v4 (browser build, sem etapa de build)           -->
+<!-- ============================================================= -->
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+<!-- ============================================================= -->
+<!-- TEMA (tokens da marca — expostos como variáveis CSS globais)  -->
+<!-- ============================================================= -->
+<style type="text/tailwindcss">
+  @theme {
+    --color-bg:     #0b0e15;  /* fundo base */
+    --color-bg-2:   #11141d;  /* seções alternadas */
+    --color-panel:  #1a1e2a;  /* cards e caixas */
+    --color-line:   #272c3a;  /* divisórias e bordas */
+    --color-ink:    #f4f5f8;  /* texto principal */
+    --color-muted:  #9aa1b3;  /* texto secundário */
+    --color-faint:  #5a6178;  /* legendas */
+    --color-mint:   #00e6a0;  /* acento: nome principal */
+    --color-violet: #8b7bff;  /* acento: nome comparado */
+    --color-cyan:   #46c8ff;  /* detalhes técnicos */
+  }
+</style>
+
+<!-- ##### TIPOGRAFIA ##### -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@200;300;400;600;700&display=swap" rel="stylesheet">
+
+<!-- ##### ESTILOS DO PROJETO ##### -->
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body class="bg-bg text-ink antialiased overflow-x-hidden">
+
+<!-- ============================================================= -->
+<!-- BARRA DE PROGRESSO + MARCA                                    -->
+<!-- ============================================================= -->
+<div id="progress" aria-hidden="true"></div>
+
+<header class="fixed top-0 inset-x-0 z-50 flex items-center justify-between px-5 sm:px-10 py-4 pointer-events-none">
+  <a href="#busca" class="brand pointer-events-auto">
+    <span class="brand-dot" aria-hidden="true"></span>
+    raiz do nome
+  </a>
+  <span class="src-tag">Censo IBGE · dados oficiais</span>
+</header>
+
+<main>
+
+  <!-- =========================================================== -->
+  <!-- HERO: a busca é a página                                    -->
+  <!-- =========================================================== -->
+  <section id="busca" class="hero" aria-labelledby="hero-titulo">
+    <div class="hero-glow" aria-hidden="true"></div>
+
+    <div class="hero-inner">
+      <h1 class="hero-eyebrow" id="hero-titulo">Quem tem seu nome? Descubra a raiz, a safra e a geração dele no Brasil</h1>
+
+      <form id="form-busca" class="search-block" autocomplete="off" novalidate>
+        <label class="sr-only" for="campo-nome">Nome para pesquisar</label>
+        <input
+          id="campo-nome"
+          class="giant-input"
+          type="text"
+          placeholder="seu nome"
+          maxlength="30"
+          spellcheck="false"
+          inputmode="text"
+          aria-describedby="dica-nome"
+        >
+
+        <!-- campo do segundo nome (modo comparação) -->
+        <div id="linha-vs" class="vs-line" hidden>
+          <span class="vs-badge" aria-hidden="true">vs</span>
+          <label class="sr-only" for="campo-nome-2">Segundo nome para comparar</label>
+          <input
+            id="campo-nome-2"
+            class="giant-input giant-input--violet"
+            type="text"
+            placeholder="outro nome"
+            maxlength="30"
+            spellcheck="false"
+            inputmode="text"
+          >
+        </div>
+
+        <p id="dica-nome" class="hint">Um nome por vez, sem sobrenome. Ex.: Maria, Glauber, Valentina…</p>
+
+        <!-- controles -->
+        <div class="controls" role="group" aria-label="Filtros da pesquisa">
+
+          <div class="seg" role="group" aria-label="Filtrar por sexo">
+            <button type="button" class="seg-btn is-on" data-sexo="">Todos</button>
+            <button type="button" class="seg-btn" data-sexo="F">Feminino</button>
+            <button type="button" class="seg-btn" data-sexo="M">Masculino</button>
+          </div>
+
+          <div class="select-wrap">
+            <label class="sr-only" for="campo-uf">Filtrar por estado</label>
+            <select id="campo-uf" class="uf-select">
+              <option value="">Brasil inteiro</option>
+            </select>
+          </div>
+
+          <button type="button" id="btn-comparar" class="ghost-btn" aria-pressed="false">+ Comparar dois nomes</button>
+
+          <button type="submit" id="btn-buscar" class="cta">Descobrir</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="scroll-cue" aria-hidden="true" hidden id="cue-resultado">
+      resultado
+      <span class="bar"></span>
+    </div>
+  </section>
+
+  <!-- =========================================================== -->
+  <!-- ESTADOS: carregando / erro                                  -->
+  <!-- =========================================================== -->
+  <div id="estado" class="estado wrap" role="status" aria-live="polite" hidden></div>
+
+  <!-- =========================================================== -->
+  <!-- RESULTADO                                                   -->
+  <!-- =========================================================== -->
+  <section id="resultado" class="resultado" aria-live="polite" hidden>
+    <div class="wrap">
+
+      <!-- contador principal -->
+      <div class="headline-block">
+        <p class="big-number"><span id="contador">0</span></p>
+        <p class="big-caption" id="legenda-contador">brasileiros registrados com esse nome</p>
+      </div>
+
+      <!-- frase de storytelling -->
+      <p class="story" id="story"></p>
+
+      <!-- gráfico por década -->
+      <figure class="chart-block">
+        <figcaption class="chart-title">
+          <span class="chart-kicker">Safras do nome</span>
+          <span id="chart-legenda-a" class="dot dot--mint"></span>
+          <span id="chart-nome-a"></span>
+          <span id="chart-legenda-b" class="chart-b" hidden>
+            <span class="dot dot--violet"></span>
+            <span id="chart-nome-b"></span>
+          </span>
+          <span class="chart-sub">safras: registros por década de nascimento</span>
+        </figcaption>
+        <div id="grafico" class="chart" role="img" aria-label="Safras do nome: gráfico de barras com registros por década"></div>
+      </figure>
+
+      <!-- estatísticas -->
+      <div class="stats" id="stats"></div>
+
+      <!-- veredito da comparação -->
+      <div id="veredito" class="veredito" hidden></div>
+
+      <!-- guardar para a próxima geração (persistência) -->
+      <form id="form-guardar" class="guardar" novalidate>
+        <p class="guardar-h">Guardar <b id="guardar-nome"></b> para a próxima geração?</p>
+        <div class="guardar-linha">
+          <label class="sr-only" for="campo-tag">Tag do candidato</label>
+          <div class="select-wrap">
+            <select id="campo-tag" class="uf-select">
+              <option value="Se for menina">Se for menina</option>
+              <option value="Se for menino">Se for menino</option>
+              <option value="Ideia da família">Ideia da família</option>
+              <option value="Só curiosidade">Só curiosidade</option>
+            </select>
+          </div>
+          <label class="sr-only" for="campo-nota">Nota pessoal</label>
+          <input id="campo-nota" class="nota-input" type="text" maxlength="80" placeholder="Nota pessoal (opcional): ideia da vó, soa bem com o sobrenome…">
+          <button type="submit" id="btn-guardar" class="cta cta--violet">Guardar</button>
+        </div>
+        <p id="guardar-msg" class="hint" aria-live="polite"></p>
+      </form>
+
+      <button type="button" id="btn-nova" class="ghost-btn ghost-btn--center">Pesquisar outro nome ↑</button>
+    </div>
+  </section>
+
+  <!-- =========================================================== -->
+  <!-- PRÓXIMA GERAÇÃO: shortlist persistida no Supabase           -->
+  <!-- =========================================================== -->
+  <section id="geracao" class="geracao" aria-labelledby="geracao-titulo">
+    <div class="wrap">
+      <div class="geracao-head">
+        <h2 class="geracao-h" id="geracao-titulo">Próxima geração</h2>
+        <p class="geracao-sub">Sua shortlist de nomes, guardada na nuvem. Toque em um nome para reabrir a pesquisa.</p>
+      </div>
+      <div id="lista-geracao" class="geracao-lista" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- =========================================================== -->
+  <!-- EXPLORAR: top 10 do Brasil                                  -->
+  <!-- =========================================================== -->
+  <section id="explorar" class="explorar" aria-labelledby="explorar-titulo">
+    <div class="wrap">
+      <h2 class="explorar-h" id="explorar-titulo">Sem ideias? Toque em um dos nomes mais comuns do Brasil</h2>
+      <div id="chips" class="chips"></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================= -->
+<!-- RODAPÉ                                                        -->
+<!-- ============================================================= -->
+<footer class="footer">
+  <p>Fonte: <a href="https://servicodados.ibge.gov.br/api/docs/nomes?versao=2" target="_blank" rel="noopener">API de Nomes do IBGE</a> · Censo Demográfico 2010</p>
+  <p class="footer-small">Bootcamp II · Etapa 02 · HTML + Tailwind CSS v4 + JavaScript + Supabase + Docker</p>
+</footer>
+
+<!-- ##### LÓGICA DO APP ##### -->
+<script type="module" src="script.js"></script>
+</body>
+</html>

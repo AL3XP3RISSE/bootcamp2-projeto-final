@@ -1,0 +1,24 @@
+{
+  "name": "raiz-do-nome",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Explorador de nomes brasileiros com dados do Censo IBGE",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AL3XP3RISSE/bootcamp2-projeto-final.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AL3XP3RISSE/bootcamp2-projeto-final/issues"
+  },
+  "homepage": "https://github.com/AL3XP3RISSE/bootcamp2-projeto-final#readme",
+  "devDependencies": {
+    "vitest": "^5.0.5"
+  }
+}

@@ -1,0 +1,36 @@
+# =============================================================
+# RAIZ DO NOME · integração contínua
+# Roda os testes do Vitest em todo PR para a main.
+# O job se chama "testes": é esse o nome do status check
+# que fica obrigatório na proteção da main.
+# =============================================================
+
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  testes:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ========== Código e ambiente ==========
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # ========== Dependências e testes ==========
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Rodar testes
+        run: npm test
