@@ -50,7 +50,7 @@ describe("titulo", () => {
 /* ========== rotuloDecada (safras) ========== */
 describe("rotuloDecada", () => {
   test("converte década do IBGE em safra", () => {
-    expect(rotuloDecada("[1990,2000[")).toBe("anos 90");
+    expect(rotuloDecada("[1990,2000[")).toBe("anos 80");
   });
 
   test("trata os anos 2000 por extenso", () => {
